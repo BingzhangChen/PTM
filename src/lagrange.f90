@@ -1,7 +1,8 @@
 ! Lagrange particle tracking on one particle
 ! !INTERFACE:
 SUBROUTINE LAGRANGE(nlev,zlev,mask,nuh,w,zi,zp)
-USE PARAMS_MOD
+USE PARAMS_MOD, only: dt
+USE Grid_3D,    only: eps
 !
 IMPLICIT NONE
 !
@@ -74,7 +75,7 @@ IF (visc_corr) THEN ! correction suggested by Visser [1997]
       if (bounce_back) then
          zloc = 2.*zlev(nlev) - zloc 
       else
-         zloc = zlev(nlev)
+         zloc = zlev(nlev)-eps
       endif
       zi   = nlev
     ! Judge whether after bouncing the particle overshoots through a grid. 
@@ -85,7 +86,7 @@ IF (visc_corr) THEN ! correction suggested by Visser [1997]
       if (bounce_back) then
          zloc = 2d0*zlev(0) - zloc      
       else
-         zloc = zlev(0)
+         zloc = zlev(0) +eps
       endif
       zi   = 1
       if (zloc > zlev(1)) then 
@@ -101,7 +102,7 @@ IF (visc_corr) THEN ! correction suggested by Visser [1997]
              if (bounce_back) then
                 zloc = 2d0*zlev(zi) - zloc
              else
-                zloc = zlev(zi)
+                zloc = zlev(zi) - eps
              endif
         ! Judge whether after bouncing the particle overshoots through a grid. 
              if (zloc < zlev(zi-1)) then 
@@ -115,7 +116,7 @@ IF (visc_corr) THEN ! correction suggested by Visser [1997]
              if (bounce_back) then
                 zloc = 2d0*zlev(zi-1) - zloc
              else
-                zloc = zlev(zi-1)
+                zloc = zlev(zi-1) + eps
              endif
 
         ! Judge whether after bouncing the particle overshoots through a grid. 
@@ -173,7 +174,7 @@ IF (zp > zlev(nlev)) THEN
    if (bounce_back) then
       zp = 2.*zlev(nlev) - zp 
    else
-      zp = zlev(nlev)
+      zp = zlev(nlev) - eps
    endif
 
  ! Judge whether after bouncing the particle overshoots through a grid. 
@@ -184,7 +185,7 @@ ELSEIF (zp < zlev(0)) THEN
    if (bounce_back) then
       zp = 2d0*zlev(0) - zp      
    else
-      zp = zlev(0)
+      zp = zlev(0) + eps
    endif
    if (zp > zlev(1)) then 
        stop "The particle overshoots! Reduce time step!"
@@ -199,7 +200,7 @@ if (step > 0.) then
           if (bounce_back) then
             zp = 2.*zlev(i) - zp
           else
-            zp = zlev(i)
+            zp = zlev(i) - eps
           endif
      ! Judge whether after bouncing the particle overshoots through a grid. 
           if (zp < zlev(i-1)) then 
@@ -213,7 +214,7 @@ elseif (step < 0.) then
           if (bounce_back) then
              zp = 2.*zlev(i-1) - zp
           else
-             zp = zlev(i-1)
+             zp = zlev(i-1) + eps
           endif
 
      ! Judge whether after bouncing the particle overshoots through a grid. 
@@ -226,7 +227,7 @@ endif
 
 !Compute new zi
 do i=1,nlev
-   if (zlev(i) .ge. zp .and. zlev(i-1) .le. zp) then
+   if (zlev(i) .gt. zp .and. zlev(i-1) .le. zp) then
        zi = i
        EXIT
    endif

@@ -1,4 +1,4 @@
-setwd('~/Working/PTM_3D/Uniform')
+setwd('~/Working/PTM_3D/Point3')
 source('~/Working/FlexEFT1D/Rscripts/Interpolate_WOA.R')
 library(plot3D)
 library(Rcpp)
@@ -11,9 +11,11 @@ oshima_persp(dir='~/Working/PTM_3D/Uniform')
 oshima_persp(dir='~/Working/PTM_3D/Point2')
 oshima_flat()
 oshima_flat(dir='~/Working/PTM_3D/Uniform')
+oshima_flat(dir='~/Working/PTM_3D/Uniform2')
 oshima_flat(dir='~/Working/PTM_3D/Point2')
+oshima_flat(dir='~/Working/PTM_3D/Point3')
 
-system('ffmpeg -framerate 4 -i Output/Zoou%04d.png Output/Zoo_point2_20181010.avi')
+system('ffmpeg -framerate 4 -i Output/Zoou%04d.png Output/Zoo_Point3_20181018.avi')
 
 system('ffmpeg -framerate 4 -i Output_persp/Zoo%04d.png Output_persp/Zoobath_point2_20181010.avi')
 

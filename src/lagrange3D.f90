@@ -165,31 +165,36 @@ DO i = 1, NG
                END DO
             ELSE
                ! The particle locates on the land
-               if (mask(Zp(k)%ix, zp(k)%iy+1, zp(k)%iz) == 1) then
-                  Zp(k)%ry=Zp(k)%ry+.1
-               else if (mask(Zp(k)%ix, zp(k)%iy-1, zp(k)%iz) == 1) then
-                  Zp(k)%ry=Zp(k)%ry-.1
-               else if (mask(Zp(k)%ix+1, zp(k)%iy, zp(k)%iz) == 1) then
-                  Zp(k)%rx=Zp(k)%rx+.1
-               else if (mask(Zp(k)%ix-1, zp(k)%iy, zp(k)%iz) == 1) then
-                  Zp(k)%rx=Zp(k)%rx-.1
+               if (mask(Zp(k)%ix, zp(k)%iy+1, NZ) == 1) then
+                  Zp(k)%ry=Zp(k)%ry+1.
+               else if (mask(Zp(k)%ix, zp(k)%iy-1, NZ) == 1) then
+                  Zp(k)%ry=Zp(k)%ry-1.
+               else if (mask(Zp(k)%ix+1, zp(k)%iy, NZ) == 1) then
+                  Zp(k)%rx=Zp(k)%rx+1.
+               else if (mask(Zp(k)%ix-1, zp(k)%iy, NZ) == 1) then
+                  Zp(k)%rx=Zp(k)%rx-1.
                else  ! Randomly disturb the particle
                   CALL RANDOM_NUMBER(rnd)
-                  rnd=2*rnd-1.
                   Zp(k)%ry=Zp(k)%ry+rnd
                   CALL RANDOM_NUMBER(rnd)
-                  rnd=2*rnd-1.
                   Zp(k)%rx=Zp(k)%rx+rnd
                endif
 
-               DO n=Zp(k)%ix,NX
+               ! Find the updated ix and iy
+               DO n=1,NX
                   if (X_w(n-1) < Zp(k)%rx .and. X_w(n) > Zp(k)%rx) then
                      Zp(k)%ix=n
                      EXIT
                   endif
                END DO
+               DO n=1,NY
+                  if (Y_w(n-1) < Zp(k)%ry .and. Y_w(n) > Zp(k)%ry) then
+                     Zp(k)%iy=n
+                     EXIT
+                  endif
+               END DO
             ENDIF
-         ENDDO
+         ENDDO  !End of do while
 
       ELSE
          ! Track the same particle in the 1st group
@@ -378,6 +383,7 @@ IF (z%rz > 0. .OR. z%rz < bot_dep) then
     write(6,*) 'ZOO current iy = ', z%iy
     write(6,*) 'ZOO current iz = ', z%iz
     write(6,*) 'ZOO current rz = ', z%rz
+    write(6,*) 'ZOO current mask = ', mask(z%ix,z%iy,z%iz)
     write(6,*) 'Bottom depth = ', bot_dep
     do i=1,NZ
        write(6,*) 'i   = ',i
