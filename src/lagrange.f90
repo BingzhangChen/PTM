@@ -1,6 +1,7 @@
 ! Lagrange particle tracking on one particle
 ! !INTERFACE:
 SUBROUTINE LAGRANGE(nlev,zlev,mask,nuh,w,zi,zp)
+USE PARAMS_MOD
 !
 IMPLICIT NONE
 !

@@ -165,7 +165,23 @@ DO i = 1, NG
                END DO
             ELSE
                ! The particle locates on the land
-               Zp(k)%ry=Zp(k)%ry-.1
+               if (mask(Zp(k)%ix, zp(k)%iy+1, zp(k)%iz) == 1) then
+                  Zp(k)%ry=Zp(k)%ry+.1
+               else if (mask(Zp(k)%ix, zp(k)%iy-1, zp(k)%iz) == 1) then
+                  Zp(k)%ry=Zp(k)%ry-.1
+               else if (mask(Zp(k)%ix+1, zp(k)%iy, zp(k)%iz) == 1) then
+                  Zp(k)%rx=Zp(k)%rx+.1
+               else if (mask(Zp(k)%ix-1, zp(k)%iy, zp(k)%iz) == 1) then
+                  Zp(k)%rx=Zp(k)%rx-.1
+               else  ! Randomly disturb the particle
+                  CALL RANDOM_NUMBER(rnd)
+                  rnd=2*rnd-1.
+                  Zp(k)%ry=Zp(k)%ry+rnd
+                  CALL RANDOM_NUMBER(rnd)
+                  rnd=2*rnd-1.
+                  Zp(k)%rx=Zp(k)%rx+rnd
+               endif
+
                DO n=Zp(k)%ix,NX
                   if (X_w(n-1) < Zp(k)%rx .and. X_w(n) > Zp(k)%rx) then
                      Zp(k)%ix=n

@@ -8,6 +8,7 @@ MAIN = PTM
 #Source file
 SRCS = Readcsv.f90 params.f90\
         Grid_3D.f90\
+	lagrange.f90\
 	lagrange3D.f90\
 	netcdf_IO.f90\
         Read_u.f90\
